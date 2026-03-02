@@ -17,6 +17,7 @@ export default function VoiceControls({
     const [micLevel, setMicLevel] = useState(0)
     const analyserRef = useRef(null)
     const animFrameRef = useRef(null)
+    const isInterruptedRef = useRef(false)
 
     // Mic level meter
     const startMeter = useCallback((stream) => {
@@ -111,6 +112,8 @@ export default function VoiceControls({
                 const payload = data.slice(1)
 
                 if (type === 0x01) {
+                    if (isInterruptedRef.current) return // Drop in-flight delayed audio chunks after interruption
+
                     // AI audio chunk - precise scheduling
                     const ctx = audioCtxRef.current
                     if (!ctx) return
@@ -178,6 +181,9 @@ export default function VoiceControls({
 
                 else if (msg.type === 'interrupted') {
                     stopAudio()
+                    isInterruptedRef.current = true
+                    // Ignore in-flight audio chunks for a short window to let the network clear
+                    setTimeout(() => { isInterruptedRef.current = false }, 1000)
                 }
 
                 else if (msg.type === 'error') {
