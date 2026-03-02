@@ -16,8 +16,17 @@ export default function VoiceControls({
     const isPlayingRef = useRef(false)
     const [micLevel, setMicLevel] = useState(0)
     const analyserRef = useRef(null)
-    const animFrameRef = useRef(null)
     const isInterruptedRef = useRef(false)
+
+    // Refs for volatile state to prevent closure staleness without triggering re-renders
+    const settingsRef = useRef(settings)
+    const bookRef = useRef(book)
+    const pageAnalysisRef = useRef(pageAnalysis)
+
+    // Keep refs in sync with props
+    useEffect(() => { settingsRef.current = settings }, [settings])
+    useEffect(() => { bookRef.current = book }, [book])
+    useEffect(() => { pageAnalysisRef.current = pageAnalysis }, [pageAnalysis])
 
     // Mic level meter
     const startMeter = useCallback((stream) => {
@@ -68,12 +77,12 @@ export default function VoiceControls({
         ws.onopen = async () => {
             // Send config as JSON (agent needs this to set up tools + system prompt)
             ws.send(JSON.stringify({
-                subject: book?.subject || 'General',
-                grade: settings.grade,
-                language: settings.language,
-                voice: settings.voice,
-                book_context: book?.title || '',
-                page_text: pageAnalysis?.full_text?.slice(0, 2000) || '',
+                subject: bookRef.current?.subject || 'General',
+                grade: settingsRef.current.grade,
+                language: settingsRef.current.language,
+                voice: settingsRef.current.voice,
+                book_context: bookRef.current?.title || '',
+                page_text: pageAnalysisRef.current?.full_text?.slice(0, 2000) || '',
             }))
 
             setSession(s => ({ ...s, isLive: true, orbState: 'listening' }))
@@ -98,7 +107,7 @@ export default function VoiceControls({
                 const f32 = e.inputBuffer.getChannelData(0)
 
                 // Check for barge-in
-                if (settings.bargeIn && activeSourcesRef.current.length > 0) {
+                if (settingsRef.current.bargeIn && activeSourcesRef.current.length > 0) {
                     let sum = 0;
                     for (let i = 0; i < f32.length; i++) sum += Math.abs(f32[i]);
                     const avg = sum / f32.length;
@@ -225,7 +234,7 @@ export default function VoiceControls({
             setSession(s => ({ ...s, isLive: false, orbState: 'idle' }))
             cancelAnimationFrame(animFrameRef.current)
         }
-    }, [settings, book, pageAnalysis, appendTranscript, setSession, stopAudio, startMeter])
+    }, [appendTranscript, setSession, stopAudio, startMeter])
 
     const endSession = useCallback(() => {
         wsRef.current?.close()

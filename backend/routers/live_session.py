@@ -399,10 +399,7 @@ You have tools available. USE THEM when appropriate:
 - compare_concepts: Compare two similar concepts side-by-side
 - generate_flashcards: Create revision flashcards
 
-Current textbook page content:
-{page_text[:2000]}
-
-Book context: {book_context[:500]}
+Current Book Name: {book_context[:150]}
 
 Be conversational, use the student's name if they give it, and make learning fun!"""
 
@@ -614,6 +611,12 @@ Be conversational, use the student's name if they give it, and make learning fun
 
             # Start receiving from Gemini in background
             recv_task = asyncio.create_task(recv_from_gemini())
+
+            # Send initial heavy context asynchronously to prevent connection timeout
+            if page_text:
+                await session.send_client_content(
+                    turns={"parts": [{"text": f"Here is the context of the textbook page we are discussing right now:\n\n{page_text[:2000]}"}]}
+                )
 
             # Forward client messages to Gemini
             try:
