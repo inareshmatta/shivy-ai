@@ -301,6 +301,9 @@
 
 .feature-mockup img {
     border-radius: 0 0 12px 12px;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* CTA Section */
