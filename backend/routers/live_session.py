@@ -380,36 +380,9 @@ async def live_session(ws: WebSocket):
 You should default to speaking in {language}. 
 However, if the student speaks a different language or explicitly asks you to change languages, you MUST switch to their requested language immediately and seamlessly.
 
-IMPORTANT CONVERSATION RULES:
-- Keep responses SHORT and conversational (1-2 sentences at a time max)
-- Pause frequently to let the student respond or ask questions
-- Do NOT give long monologues — break explanations into small chunks
-- After each chunk, ask "Does that make sense?" or "Want me to continue?"
-- Use simple analogies and real-world examples
-- Make learning fun and interactive
-
-You have tools available. USE THEM when appropriate:
-- generate_quiz: Quiz the student after explaining a topic
-- lookup_word: Define unfamiliar terms
-- generate_visual: Create diagrams when visual explanation helps
-- create_bookmark: Save important concepts for revision
-- suggest_next_topic: Recommend next study topic
-- summarize_page: Summarize dense pages
-- explain_like_im_5: Simplify concepts with everyday analogies
-- compare_concepts: Compare two similar concepts side-by-side
-- generate_flashcards: Create revision flashcards
-
-Current Book Name: {book_context[:150]}
-Current Page Text Context (DO NOT read this text out loud automatically. The student is looking at this page. Just use it to answer their questions):
-{page_text[:2000]}
-
-Be conversational, use the student's name if they give it, and make learning fun!
-
-INITIAL GREETING:
-When the session starts, briefly say something like "Hi there! I'm KlassroomAI. What are we studying today?" or acknowledge the book/page text if available. Just a short, friendly opening."""
+Be conversational, use the student's name if they give it, and make learning fun!"""
 
         # Connect to Gemini Live API
-        # Plain dict format for tools (matching official docs exactly)
         live_tools = [{
             "function_declarations": [
                 {
@@ -521,34 +494,24 @@ When the session starts, briefly say something like "Hi there! I'm KlassroomAI. 
             ]
         }]
 
-        # 1. Lean Handshake: Connect with minimal config to optimize speed
-        live_config = {
-            "response_modalities": ["AUDIO"],
-            "output_audio_transcription": {},
-            "input_audio_transcription": {},
-        }
+        live_config = types.LiveConnectConfig(
+            response_modalities=["AUDIO"],
+            system_instruction=types.Content(parts=[types.Part.from_text(text=system_prompt)]),
+            tools=live_tools,
+        )
 
-        print(f"[LIVE] Connecting to Gemini model: {LIVE_MODEL} (Lean Handshake)...")
+        print(f"[LIVE] Connecting to Gemini model: {LIVE_MODEL}...")
         async with client.aio.live.connect(
             model=LIVE_MODEL, config=live_config
         ) as session:
             print("[LIVE] Connected to Gemini Live API.")
 
-            # 2. Parallel Config Update: Send full instructions and tools as the first turn
-            # This moves the processing penalty to AFTER the connection is active.
+            # Trigger immediate greeting and inject page text as context
             await session.send_client_content(
-                turns=[
-                    {
-                        "parts": [
-                            {"text": f"SYSTEM_UPDATE: {system_prompt}"},
-                            {"text": f"TOOL_REGISTRATION: {json.dumps(live_tools)}"},
-                            {"text": "SESSION_START: Greet the student briefly and wait for their input."}
-                        ]
-                    }
-                ],
+                turns=[{"parts": [{"text": f"[Page context: {page_text[:1000]}] Hi there! Let's start our session."}]}],
                 turn_complete=True
             )
-            print("[LIVE] Sent system context and tools to Gemini.")
+            print("[LIVE] Sent greeting trigger and context.")
 
             async def recv_from_gemini():
                 """Listen for Gemini responses — audio, text, or tool calls."""
@@ -654,10 +617,9 @@ When the session starts, briefly say something like "Hi there! I'm KlassroomAI. 
 
                         if msg_type == 0x00:
                             # Audio from mic (PCM 16kHz)
-                            # Log every 50 packets to avoid spam
                             if not hasattr(ws, '_pcm_count'): ws._pcm_count = 0
                             ws._pcm_count += 1
-                            if ws._pcm_count % 50 == 0:
+                            if ws._pcm_count in (1, 10) or ws._pcm_count % 50 == 0:
                                 print(f"[LIVE] Forwarding audio to Gemini (chunk {ws._pcm_count}, {len(payload)} bytes)")
                             
                             await session.send_realtime_input(
