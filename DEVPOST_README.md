@@ -83,13 +83,13 @@ Students input their exam date and available daily study hours:
 
 ### 🏗️ Architecture Diagram
 
-![KlassroomAI Architecture](docs/architecture_diagram.png)
+![KlassroomAI Architecture](https://raw.githubusercontent.com/inareshmatta/klassroom-ai/main/docs/architecture_diagram.png)
 
 Our system is a decoupled **React Frontend** and **FastAPI Python Backend**, orchestrated via WebSockets for real-time streaming to the Gemini API. The full stack is deployed to **Google Cloud Run**.
 
 ### 🔊 Voice Tutor Data Flow
 
-![Voice Tutor Flow](docs/voice_tutor_flow.png)
+![Voice Tutor Flow](https://raw.githubusercontent.com/inareshmatta/klassroom-ai/main/docs/voice_tutor_flow.png)
 
 ### 🧩 Technology Stack
 
