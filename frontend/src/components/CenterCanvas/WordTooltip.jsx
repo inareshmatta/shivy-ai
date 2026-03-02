@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './WordTooltip.css'
 
 export default function WordTooltip({ word, x, y, definition, loading, onClose, onAskTutor, onBookmark, onVisualize }) {
     const ref = useRef()
+    const [pos, setPos] = useState({ left: x, top: y + 12 })
 
     useEffect(() => {
         const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose() }
@@ -11,15 +12,37 @@ export default function WordTooltip({ word, x, y, definition, loading, onClose, 
         return () => document.removeEventListener('mousedown', handler)
     }, [onClose])
 
-    const left = Math.min(x, window.innerWidth - 360)
-    const top = Math.min(y + 12, window.innerHeight - 400)
+    // Reposition after render to keep tooltip fully within viewport
+    useEffect(() => {
+        if (!ref.current) return
+        const rect = ref.current.getBoundingClientRect()
+        const margin = 16
+        let left = x
+        let top = y + 12
+
+        // Clamp right edge
+        if (left + rect.width > window.innerWidth - margin) {
+            left = window.innerWidth - rect.width - margin
+        }
+        // Clamp left edge
+        if (left < margin) left = margin
+
+        // Clamp bottom edge — if tooltip overflows below, show above the word
+        if (top + rect.height > window.innerHeight - margin) {
+            top = y - rect.height - 8
+        }
+        // Clamp top edge
+        if (top < margin) top = margin
+
+        setPos({ left, top })
+    }, [x, y, definition, loading])
 
     return (
         <AnimatePresence>
             <motion.div
                 ref={ref}
                 className="word-tooltip tooltip"
-                style={{ left, top }}
+                style={{ left: pos.left, top: pos.top }}
                 initial={{ opacity: 0, scale: 0.9, y: -8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}

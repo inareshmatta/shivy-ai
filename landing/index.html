@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlassroomAI — AI-Powered Interactive Textbook Tutor</title>
+    <meta name="description" content="Transform static textbooks into interactive, multimodal AI learning environments with real-time voice tutoring powered by Gemini.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">KlassroomAI</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#tools">AI Tools</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#demo">Demo</a>
+            </div>
+            <a href="https://klassroom-api-vav7hon2rq-uc.a.run.app" class="btn btn-primary nav-cta" target="_blank">
+                Launch App →
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badges">
+                <span class="badge badge-glow">🏆 Gemini Live Agent Challenge</span>
+                <span class="badge">Powered by Gemini 2.5</span>
+            </div>
+            <h1 class="hero-title">
+                Your Textbook Just 
+                <span class="gradient-text">Learned to Talk</span>
+            </h1>
+            <p class="hero-subtitle">
+                KlassroomAI transforms static PDFs into interactive AI learning environments. 
+                Upload any textbook and get a <strong>real-time voice tutor</strong> that sees your pages, 
+                hears your questions, and teaches with zero latency.
+            </p>
+            <div class="hero-actions">
+                <a href="https://klassroom-api-vav7hon2rq-uc.a.run.app" class="btn btn-primary btn-lg" target="_blank">
+                    <span class="btn-icon">🎙️</span> Try Live Demo
+                </a>
+                <a href="#features" class="btn btn-outline btn-lg">
+                    See Features ↓
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">9</span>
+                    <span class="stat-label">AI Agent Tools</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">&lt;500ms</span>
+                    <span class="stat-label">Voice Latency</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">3</span>
+                    <span class="stat-label">Gemini Models</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-screenshot-wrapper">
+                <div class="screenshot-glow"></div>
+                <img src="screenshot_dashboard.png" alt="KlassroomAI Dashboard" class="hero-screenshot" id="hero-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Bar -->
+    <section class="tech-bar">
+        <div class="tech-bar-inner">
+            <span class="tech-item"><span class="tech-dot" style="background:#3776AB"></span> Python</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#009688"></span> FastAPI</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#61DAFB"></span> React 19</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#646CFF"></span> Vite</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#886FBF"></span> Gemini</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#4285F4"></span> Cloud Run</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#FF6600"></span> PDF.js</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#0055FF"></span> Framer Motion</span>
+            <span class="tech-item"><span class="tech-dot" style="background:#2496ED"></span> Docker</span>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <span class="section-tag">Features</span>
+            <h2 class="section-title">Not a Chatbot. <span class="gradient-text">An Agent.</span></h2>
+            <p class="section-desc">KlassroomAI doesn't wait for you to ask. It watches, listens, and proactively guides your learning.</p>
+        </div>
+
+        <!-- Feature 1: Voice Tutor -->
+        <div class="feature-row" id="feature-voice">
+            <div class="feature-text">
+                <span class="feature-tag">🎙️ Core Feature</span>
+                <h3>Real-time Voice Tutor</h3>
+                <p>
+                    Talk to your textbook like you'd talk to a human tutor. Powered by 
+                    <strong>Gemini 2.5 Flash Native Audio</strong>, the AI responds with natural, 
+                    warm voice in under 500ms. Interrupt it mid-sentence — it stops, listens, and adapts.
+                </p>
+                <ul class="feature-list">
+                    <li><span class="check">✦</span> True barge-in via binary PCM WebSocket streaming</li>
+                    <li><span class="check">✦</span> Contextual — reads the page you're on</li>
+                    <li><span class="check">✦</span> Sees your diagrams via Vision integration</li>
+                    <li><span class="check">✦</span> Precise WebAudio scheduling for zero stutter</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <div class="feature-card voice-card">
+                    <div class="voice-wave">
+                        <div class="wave-bar" style="--i:1"></div>
+                        <div class="wave-bar" style="--i:2"></div>
+                        <div class="wave-bar" style="--i:3"></div>
+                        <div class="wave-bar" style="--i:4"></div>
+                        <div class="wave-bar" style="--i:5"></div>
+                        <div class="wave-bar" style="--i:6"></div>
+                        <div class="wave-bar" style="--i:7"></div>
+                        <div class="wave-bar" style="--i:8"></div>
+                        <div class="wave-bar" style="--i:9"></div>
+                        <div class="wave-bar" style="--i:10"></div>
+                        <div class="wave-bar" style="--i:11"></div>
+                        <div class="wave-bar" style="--i:12"></div>
+                    </div>
+                    <p class="voice-label">"Can you explain photosynthesis on this page?"</p>
+                    <div class="voice-response">
+                        <div class="ai-avatar">🤖</div>
+                        <p>"Of course! Looking at the diagram on page 42, photosynthesis is the process by which plants convert light energy into..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2: Visual Explainer -->
+        <div class="feature-row reverse" id="feature-visual">
+            <div class="feature-text">
+                <span class="feature-tag">🖼️ Visual Intelligence</span>
+                <h3>AI Visual Explainer</h3>
+                <p>
+                    Some concepts need pictures. Say "Show me the Krebs Cycle" and the agent 
+                    generates an <strong>infographic, flowchart, or concept map</strong> on the fly 
+                    using Nano Banana 2 — grounded by Google Search for accuracy.
+                </p>
+                <ul class="feature-list">
+                    <li><span class="check">✦</span> 5 visualization types: concept map, flowchart, diagram, infographic, timeline</li>
+                    <li><span class="check">✦</span> Google Search grounded — no hallucinated diagrams</li>
+                    <li><span class="check">✦</span> Iterative refinement: "Make it simpler"</li>
+                    <li><span class="check">✦</span> Fast & Pro 4K quality modes</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <div class="screenshot-frame">
+                    <div class="frame-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <img src="screenshot_visual.png" alt="Visual Explainer Interface" class="feature-screenshot">
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3: Assessment Center -->
+        <div class="feature-row" id="feature-quiz">
+            <div class="feature-text">
+                <span class="feature-tag">📝 Assessment</span>
+                <h3>Autonomous Quiz & Assessment</h3>
+                <p>
+                    The agent autonomously triggers quizzes when it detects you've finished a topic. 
+                    Choose from <strong>MCQ, Fill-in-the-Blank, True/False, Match</strong>, and 
+                    <strong>Short Answer</strong> — all generated from your actual textbook content.
+                </p>
+                <ul class="feature-list">
+                    <li><span class="check">✦</span> 5 question types with configurable difficulty</li>
+                    <li><span class="check">✦</span> Auto-triggered by the voice tutor agent</li>
+                    <li><span class="check">✦</span> Score tracking and streak counters</li>
+                    <li><span class="check">✦</span> Source: current page, whole book, or custom topic</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <div class="screenshot-frame">
+                    <div class="frame-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <img src="screenshot_assessment.png" alt="Assessment Center" class="feature-screenshot">
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 4: Interactive PDF -->
+        <div class="feature-row reverse" id="feature-pdf">
+            <div class="feature-text">
+                <span class="feature-tag">👁️ Deep PDF Integration</span>
+                <h3>Every Word is Clickable</h3>
+                <p>
+                    Using <strong>PDF.js TextLayer</strong> mapped pixel-perfect over the canvas, 
+                    every word in your textbook becomes interactive. Click for instant dictionary lookups, 
+                    highlight to save to your Knowledge Vault, or ask the AI to explain the entire page.
+                </p>
+                <ul class="feature-list">
+                    <li><span class="check">✦</span> Click any word → IPA, etymology, definition</li>
+                    <li><span class="check">✦</span> Save → Knowledge Vault for revision</li>
+                    <li><span class="check">✦</span> Visualize → opens Visual Explainer for that concept</li>
+                    <li><span class="check">✦</span> Explain Page → sends canvas snapshot to Gemini Vision</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <div class="feature-card pdf-card">
+                    <div class="word-demo">
+                        <span class="word">The</span>
+                        <span class="word">process</span>
+                        <span class="word">of</span>
+                        <span class="word highlighted">mitochondria</span>
+                        <span class="word">converting</span>
+                        <span class="word">glucose</span>
+                    </div>
+                    <div class="tooltip-demo">
+                        <div class="tooltip-header">
+                            <strong>mitochondria</strong>
+                            <span class="ipa">/ˌmaɪ.toʊˈkɑːn.dri.ə/</span>
+                        </div>
+                        <p class="tooltip-def">The powerhouse of the cell — organelles that generate most of the cell's supply of ATP.</p>
+                        <div class="tooltip-actions">
+                            <span class="tooltip-btn">🔖 Save</span>
+                            <span class="tooltip-btn">🎨 Visualize</span>
+                            <span class="tooltip-btn">🎙️ Ask Tutor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Tools Section -->
+    <section class="tools-section" id="tools">
+        <div class="section-header">
+            <span class="section-tag">Agent Architecture</span>
+            <h2 class="section-title"><span class="gradient-text">9 Autonomous Tools</span></h2>
+            <p class="section-desc">Gemini decides when to fire each tool — no user prompting required.</p>
+        </div>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <span class="tool-icon">📝</span>
+                <h4>generate_quiz</h4>
+                <p>Auto-fires MCQ, True/False, Fill-in-the-Blank after topics</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">📖</span>
+                <h4>lookup_word</h4>
+                <p>Google Search-grounded dictionary with IPA & etymology</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">🎨</span>
+                <h4>generate_visual</h4>
+                <p>Creates infographics and concept maps via Nano Banana 2</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">🔖</span>
+                <h4>create_bookmark</h4>
+                <p>Saves concepts to the Knowledge Vault for revision</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">🧭</span>
+                <h4>suggest_next_topic</h4>
+                <p>Recommends what to study next in logical order</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">📋</span>
+                <h4>summarize_page</h4>
+                <p>Bullet-point summaries of dense textbook pages</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">🧒</span>
+                <h4>explain_like_im_5</h4>
+                <p>Simplifies hard concepts with everyday analogies</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">⚖️</span>
+                <h4>compare_concepts</h4>
+                <p>Side-by-side comparisons of similar concepts</p>
+            </div>
+            <div class="tool-card">
+                <span class="tool-icon">🃏</span>
+                <h4>generate_flashcards</h4>
+                <p>Front/back revision cards for spaced repetition</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="architecture-section" id="architecture">
+        <div class="section-header">
+            <span class="section-tag">Under the Hood</span>
+            <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
+        </div>
+        <div class="arch-flow">
+            <div class="arch-node">
+                <div class="arch-icon">🎤</div>
+                <h4>Student</h4>
+                <p>Speaks, clicks, reads</p>
+            </div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">
+                <div class="arch-icon">⚛️</div>
+                <h4>React Frontend</h4>
+                <p>PDF.js · WebAudio · Mic</p>
+            </div>
+            <div class="arch-arrow">
+                <span class="arch-label">WebSocket<br>PCM Audio</span>
+                →
+            </div>
+            <div class="arch-node highlight">
+                <div class="arch-icon">⚙️</div>
+                <h4>FastAPI Backend</h4>
+                <p>Cloud Run · Agent Logic</p>
+            </div>
+            <div class="arch-arrow">
+                <span class="arch-label">LiveConnect<br>Stream</span>
+                →
+            </div>
+            <div class="arch-node">
+                <div class="arch-icon">✨</div>
+                <h4>Gemini API</h4>
+                <p>Native Audio · Vision · Search</p>
+            </div>
+        </div>
+        <div class="arch-models">
+            <div class="model-badge">
+                <strong>Gemini 2.5 Flash Native Audio</strong>
+                <span>Real-time voice</span>
+            </div>
+            <div class="model-badge">
+                <strong>Gemini 3 Flash Preview</strong>
+                <span>Agent orchestration</span>
+            </div>
+            <div class="model-badge">
+                <strong>Gemini 2.5 Pro Vision</strong>
+                <span>Page analysis</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="demo">
+        <div class="cta-glow"></div>
+        <h2>Ready to Transform Your Study Experience?</h2>
+        <p>Upload any PDF. Start talking. Let the AI tutor guide you.</p>
+        <a href="https://klassroom-api-vav7hon2rq-uc.a.run.app" class="btn btn-primary btn-lg" target="_blank">
+            🚀 Launch KlassroomAI
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo-icon">📚</span> KlassroomAI
+            </div>
+            <p>Built for the <strong>Gemini Live Agent Challenge</strong> · Powered by Google Gemini · Deployed on Google Cloud Run</p>
+            <div class="footer-links">
+                <span>Made with ❤️ for education</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-row, .tool-card, .arch-node, .section-header').forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
