@@ -652,9 +652,9 @@ Be conversational, use the student's name if they give it, and make learning fun
                             )
                         elif data.get("type") == "client_interruption":
                             # Send a clear message that the user interrupted without closing the turn.
-                            # This naturally breaks Gemini out of its speaking loop while continuing to listen.
+                            # An empty parts list forces truncation of the AI's audio pipeline but keeps the microphone active.
                             await session.send_client_content(
-                                turns={"parts": [{"text": "\n"}]},
+                                turns={"parts": []},
                                 turn_complete=False
                             )
 
