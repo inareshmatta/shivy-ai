@@ -1,0 +1,41 @@
+.drop-zone {
+    border: 2px dashed var(--clr-border-1);
+    border-radius: var(--radius);
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-out);
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--clr-primary);
+    background: var(--clr-primary-glow);
+}
+
+.drop-icon {
+    font-size: 24px;
+}
+
+.drop-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--clr-text-muted);
+}
+
+.upload-success {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}

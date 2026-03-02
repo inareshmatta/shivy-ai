@@ -1,0 +1,134 @@
+.orb {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+.orb-core {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--orb-color) 80%, white), var(--orb-color));
+    box-shadow: 0 0 20px var(--orb-glow), 0 0 6px var(--orb-color);
+    transition: all 0.4s var(--ease-spring);
+}
+
+.orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid var(--orb-color);
+    opacity: 0;
+    transition: border-color 0.4s;
+}
+
+.orb-ring-1 {
+    width: 38px;
+    height: 38px;
+}
+
+.orb-ring-2 {
+    width: 48px;
+    height: 48px;
+}
+
+/* Idle — subtle pulse */
+.orb-idle .orb-core {
+    animation: orb-idle-pulse 3s ease-in-out infinite;
+}
+
+/* Listening — ripple rings */
+.orb-listening .orb-ring-1,
+.orb-listening .orb-ring-2 {
+    animation: orb-ring 1.6s ease-out infinite;
+}
+
+.orb-listening .orb-ring-2 {
+    animation-delay: 0.5s;
+}
+
+/* Thinking — shimmer */
+.orb-thinking .orb-core {
+    animation: orb-shimmer 1s ease-in-out infinite alternate;
+}
+
+/* Speaking — bounce */
+.orb-speaking .orb-core {
+    animation: orb-speak 0.5s ease-in-out infinite alternate;
+}
+
+.orb-speaking .orb-ring-1,
+.orb-speaking .orb-ring-2 {
+    animation: orb-ring 0.8s ease-out infinite;
+}
+
+.orb-speaking .orb-ring-2 {
+    animation-delay: 0.25s;
+}
+
+/* Interrupted — flash */
+.orb-interrupted .orb-core {
+    animation: orb-flash 0.3s ease-out 3;
+}
+
+/* Keyframes */
+@keyframes orb-idle-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+}
+
+@keyframes orb-ring {
+    from {
+        opacity: 0.7;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(1.4);
+    }
+}
+
+@keyframes orb-shimmer {
+    from {
+        box-shadow: 0 0 12px var(--orb-glow);
+    }
+
+    to {
+        box-shadow: 0 0 32px var(--orb-glow), 0 0 60px var(--orb-glow);
+    }
+}
+
+@keyframes orb-speak {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.18);
+    }
+}
+
+@keyframes orb-flash {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}

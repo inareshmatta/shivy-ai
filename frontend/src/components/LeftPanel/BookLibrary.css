@@ -1,0 +1,137 @@
+.book-library {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+}
+
+.bl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.bl-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-smooth);
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.bl-item:hover {
+    background: var(--clr-surface-1);
+}
+
+.bl-item.active {
+    background: var(--clr-surface-2);
+    border-color: var(--clr-border-1);
+    box-shadow: inset 0 0 0 1px var(--clr-primary-glow);
+}
+
+.bl-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    border-radius: 0 3px 3px 0;
+    background: var(--gradient-brand);
+}
+
+.bl-item-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.bl-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bl-item-title {
+    font-size: 12px;
+    font-weight: 550;
+}
+
+.bl-item-remove {
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: var(--clr-surface-1);
+    color: var(--clr-text-muted);
+    border-radius: 6px;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bl-item:hover .bl-item-remove {
+    opacity: 1;
+}
+
+.bl-item-remove:hover {
+    background: var(--clr-coral-glow);
+    color: var(--clr-coral);
+}
+
+/* Upload zone */
+.bl-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1.5px dashed var(--clr-border-1);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    margin-top: 2px;
+}
+
+.bl-upload:hover,
+.bl-upload.drag-over {
+    border-color: var(--clr-primary);
+    background: var(--clr-primary-glow);
+}
+
+.bl-upload.uploading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.bl-upload-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--clr-surface-1);
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--clr-text-muted);
+    transition: all 0.2s;
+}
+
+.bl-upload:hover .bl-upload-icon {
+    background: var(--clr-primary-glow);
+    color: var(--clr-primary);
+}
+
+.bl-upload-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--clr-text-muted);
+}

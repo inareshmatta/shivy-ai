@@ -1,0 +1,151 @@
+.visual-panel {
+    position: fixed;
+    inset: 0;
+    top: 52px;
+    /* below topbar */
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(124, 108, 248, 0.15) 0%, transparent 70%),
+        var(--clr-bg-2);
+    border-top: 1px solid var(--clr-border-1);
+}
+
+.vp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--clr-border);
+    flex-shrink: 0;
+}
+
+.vp-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vp-body {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Left controls */
+.vp-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-right: 1px solid var(--clr-border);
+    overflow-y: auto;
+}
+
+.vp-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.vp-textarea {
+    resize: none;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.vp-quality-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vp-refine-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vp-history {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vp-history-thumbs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.vp-thumb {
+    width: 56px;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid var(--clr-border);
+    transition: border-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    color: var(--clr-text-muted);
+    padding-bottom: 2px;
+}
+
+.vp-thumb.active {
+    border-color: var(--clr-primary);
+}
+
+.vp-thumb img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+/* Canvas area */
+.vp-canvas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: auto;
+}
+
+.vp-output-img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: var(--radius);
+    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+}
+
+.vp-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--clr-text-muted);
+}
+
+/* Generating state */
+.vp-generating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: var(--clr-text-muted);
+}
+
+.vp-gen-orb {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #b09bf8, #7c6cf8);
+    box-shadow: 0 0 40px #7c6cf880;
+    animation: orb-speak 0.7s ease-in-out infinite alternate;
+}

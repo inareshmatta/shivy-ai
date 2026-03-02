@@ -1,0 +1,154 @@
+.book-renderer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.book-zoom {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: var(--clr-surface-1);
+    border: 1px solid var(--clr-border);
+    border-radius: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.book-canvas-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+}
+
+.book-canvas {
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 100%;
+}
+
+.book-loading {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.book-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    flex-shrink: 0;
+}
+
+.page-input {
+    width: 40px;
+    background: var(--clr-surface-1);
+    border: 1px solid var(--clr-border);
+    border-radius: 4px;
+    color: var(--clr-text);
+    text-align: center;
+    font-size: 13px;
+    font-family: inherit;
+    padding: 2px 4px;
+    outline: none;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.page-input:focus {
+    border-color: var(--clr-primary);
+}
+
+.page-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.book-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px;
+    color: var(--clr-coral);
+    font-size: 18px;
+}
+
+.book-error p {
+    font-size: 13px;
+    color: var(--clr-text-muted);
+}
+
+.book-image-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.book-page-img {
+    max-width: 100%;
+    max-height: calc(100vh - 180px);
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══ pdf.js TextLayer — pixel-perfect overlay ═══ */
+.textLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    opacity: 0.25;
+    line-height: 1;
+    text-size-adjust: none;
+    forced-color-adjust: none;
+    z-index: 2;
+}
+
+.textLayer span,
+.textLayer br {
+    color: transparent;
+    position: absolute;
+    white-space: pre;
+    cursor: pointer;
+    transform-origin: 0% 0%;
+}
+
+.textLayer span::selection {
+    background: rgba(108, 142, 242, 0.35);
+}
+
+/* Hover effect — subtle blue glow on words */
+.textLayer span:hover {
+    background: rgba(108, 142, 242, 0.2);
+    border-radius: 2px;
+    color: transparent;
+}
+
+/* Active/clicked state */
+.textLayer span:active {
+    background: rgba(108, 142, 242, 0.4);
+    border-radius: 2px;
+}
+
+/* Boost visibility on container hover */
+.textLayer:hover {
+    opacity: 0.5;
+}

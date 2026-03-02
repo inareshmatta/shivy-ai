@@ -1,0 +1,35 @@
+/* ================================================================
+   App Layout — Premium SaaS 3-panel grid
+   ================================================================ */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background:
+    radial-gradient(ellipse 90% 60% at 10% -20%, rgba(108, 142, 242, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 85% 110%, rgba(166, 125, 248, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(54, 214, 182, 0.03) 0%, transparent 50%),
+    var(--clr-bg);
+  overflow: hidden;
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: var(--panel-gap);
+  padding: 0 var(--panel-gap) var(--panel-gap);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Panel base */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+}

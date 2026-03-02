@@ -1,0 +1,480 @@
+import { useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
+import './AssessmentPanel.css'
+
+const QUIZ_TYPES = [
+    { id: 'mcq', label: 'Multiple Choice', icon: '🅰️', desc: '4 options, one correct' },
+    { id: 'fill_blank', label: 'Fill in the Blank', icon: '✏️', desc: 'Complete the sentence' },
+    { id: 'true_false', label: 'True or False', icon: '✓✗', desc: 'Fact verification' },
+    { id: 'match_following', label: 'Match the Following', icon: '🔗', desc: 'Connect pairs' },
+    { id: 'short_answer', label: 'Short Answer', icon: '📝', desc: 'Write brief answers' },
+]
+
+const DIFFICULTY_LABELS = ['Beginner', 'Elementary', 'Intermediate', 'Advanced', 'Expert']
+
+export default function AssessmentPanel({ books, activeBook, pageAnalysis, currentPage, onClose }) {
+    const [step, setStep] = useState('setup')  // setup | taking | results
+    const [selectedTypes, setSelectedTypes] = useState(['mcq'])
+    const [difficulty, setDifficulty] = useState(3)
+    const [numQuestions, setNumQuestions] = useState(10)
+    const [topic, setTopic] = useState('')
+    const [sourceScope, setSourceScope] = useState('current_page')  // current_page | whole_book | custom
+
+    const [questions, setQuestions] = useState([])
+    const [answers, setAnswers] = useState({})     // qIdx -> answer
+    const [matchAnswers, setMatchAnswers] = useState({})  // qIdx -> { left -> right }
+    const [currentQ, setCurrentQ] = useState(0)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [grading, setGrading] = useState(false)
+    const [results, setResults] = useState(null)
+
+    const toggleType = (id) => {
+        setSelectedTypes(prev =>
+            prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+        )
+    }
+
+    // Generate assessment from real backend API
+    const generateAssessment = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            const sourceText = pageAnalysis?.full_text || topic
+            if (!sourceText || sourceText.trim().length < 10) {
+                setError('Please upload a book or enter a topic to generate questions from.')
+                setLoading(false)
+                return
+            }
+
+            const fd = new FormData()
+            fd.append('page_text', sourceText)
+            fd.append('quiz_type', selectedTypes.join(','))
+            fd.append('difficulty', difficulty)
+            fd.append('num_questions', numQuestions)
+            fd.append('subject', activeBook?.subject || 'General')
+            fd.append('topic', topic)
+            fd.append('source_scope', sourceScope)
+
+            const res = await fetch('/api/generate-quiz', { method: 'POST', body: fd })
+            if (res.ok) {
+                const data = await res.json()
+                const qs = (data.questions || []).map((q, i) => ({ ...q, id: i }))
+                if (qs.length === 0) {
+                    setError('AI returned no questions. Try a different topic or difficulty.')
+                } else {
+                    setQuestions(qs)
+                    setAnswers({})
+                    setMatchAnswers({})
+                    setCurrentQ(0)
+                    setStep('taking')
+                }
+            } else {
+                const errData = await res.json().catch(() => ({}))
+                setError(errData.detail || `Server error (${res.status}). Make sure the backend is running.`)
+            }
+        } catch (err) {
+            setError(`Cannot connect to backend. Start it with: cd backend && uvicorn main:app --port 8080`)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const submitAnswer = (qIdx, answer) => {
+        setAnswers(prev => ({ ...prev, [qIdx]: answer }))
+    }
+
+    const submitMatchAnswer = (qIdx, left, right) => {
+        setMatchAnswers(prev => ({
+            ...prev,
+            [qIdx]: { ...(prev[qIdx] || {}), [left]: right }
+        }))
+    }
+
+    // Grade the assessment
+    const gradeAssessment = async () => {
+        setGrading(true)
+        let correct = 0, total = questions.length
+        const graded = questions.map((q, i) => {
+            let isCorrect = false
+            let userAnswer = ''
+
+            if (q.type === 'mcq' || q.type === 'true_false') {
+                isCorrect = answers[i] === q.correct_index
+                userAnswer = q.options?.[answers[i]] || 'Not answered'
+            } else if (q.type === 'fill_blank') {
+                const ans = (answers[i] || '').trim().toLowerCase()
+                const corr = (q.correct_answer || '').trim().toLowerCase()
+                isCorrect = ans === corr || corr.includes(ans)
+                userAnswer = answers[i] || 'Not answered'
+            } else if (q.type === 'match_following') {
+                const matches = matchAnswers[i] || {}
+                const pairs = q.pairs || []
+                isCorrect = pairs.every(p => matches[p.left] === p.right)
+                userAnswer = Object.entries(matches).map(([l, r]) => `${l} → ${r}`).join(', ')
+            } else if (q.type === 'short_answer') {
+                userAnswer = answers[i] || 'Not answered'
+                isCorrect = userAnswer.length > 10
+            }
+
+            if (isCorrect) correct++
+            return { ...q, userAnswer, isCorrect }
+        })
+
+        const percentage = Math.round((correct / total) * 100)
+        let grade = 'F'
+        if (percentage >= 90) grade = 'A+'
+        else if (percentage >= 80) grade = 'A'
+        else if (percentage >= 70) grade = 'B'
+        else if (percentage >= 60) grade = 'C'
+        else if (percentage >= 50) grade = 'D'
+
+        setResults({
+            correct, total, percentage, grade,
+            questions: graded,
+            timestamp: Date.now(),
+        })
+        setStep('results')
+        setGrading(false)
+    }
+
+    const restartAssessment = () => {
+        setStep('setup')
+        setResults(null)
+        setQuestions([])
+        setAnswers({})
+        setMatchAnswers({})
+    }
+
+    const answeredCount = Object.keys(answers).length + Object.keys(matchAnswers).length
+
+    return (
+        <motion.div className="assessment-panel"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}>
+
+            <motion.div className="ap-container"
+                initial={{ y: 40, scale: 0.97 }}
+                animate={{ y: 0, scale: 1 }}
+                exit={{ y: 40 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 380 }}>
+
+                {/* Header */}
+                <div className="ap-header">
+                    <div className="flex items-center gap-3">
+                        <span className="icon-box icon-box-md" style={{ background: 'var(--gradient-brand)', fontSize: 20 }}>📝</span>
+                        <div>
+                            <h2 className="gradient-text" style={{ fontSize: '1.15rem' }}>Assessment Center</h2>
+                            <span className="text-xs text-muted">AI-powered quiz generation & grading</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {step === 'taking' && (
+                            <span className="tag tag-blue">{answeredCount}/{questions.length} answered</span>
+                        )}
+                        <button id="btn-close-assessment" className="btn btn-ghost btn-sm" onClick={onClose}>✕ Close</button>
+                    </div>
+                </div>
+
+                {/* Setup */}
+                {step === 'setup' && (
+                    <div className="ap-setup">
+                        <div className="ap-setup-left">
+                            <h3 style={{ marginBottom: 14 }}>Configure Assessment</h3>
+
+                            {/* Topic */}
+                            <div className="ap-field">
+                                <label className="ap-label">Topic / Focus</label>
+                                <input id="input-assess-topic" className="input"
+                                    placeholder="e.g. Photosynthesis, Cell Biology, Chapter 3…"
+                                    value={topic} onChange={e => setTopic(e.target.value)} />
+                            </div>
+
+                            {/* Source scope */}
+                            <div className="ap-field">
+                                <label className="ap-label">Source</label>
+                                <div className="ap-scope-row">
+                                    {[
+                                        ['current_page', '📄 Current Page'],
+                                        ['whole_book', '📚 Whole Book'],
+                                        ['custom', '✏️ Custom Topic'],
+                                    ].map(([val, label]) => (
+                                        <button key={val}
+                                            className={`btn btn-sm ${sourceScope === val ? 'btn-primary' : 'btn-ghost'}`}
+                                            onClick={() => setSourceScope(val)}>{label}</button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Number of questions */}
+                            <div className="ap-field">
+                                <label className="ap-label">Questions: {numQuestions}</label>
+                                <input type="range" className="ap-range" min={3} max={20} value={numQuestions}
+                                    onChange={e => setNumQuestions(parseInt(e.target.value))} />
+                            </div>
+
+                            {/* Difficulty */}
+                            <div className="ap-field">
+                                <label className="ap-label">Difficulty: {DIFFICULTY_LABELS[difficulty - 1]}</label>
+                                <div className="ap-diff-bar">
+                                    {[1, 2, 3, 4, 5].map(d => (
+                                        <button key={d}
+                                            className={`ap-diff-dot ${d <= difficulty ? 'active' : ''}`}
+                                            onClick={() => setDifficulty(d)}>
+                                            <span className="text-xxs">{d}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {error && (
+                                <div className="ap-error">
+                                    ⚠️ {error}
+                                </div>
+                            )}
+
+                            <button id="btn-start-assessment" className="btn btn-primary btn-lg w-full"
+                                onClick={generateAssessment} disabled={loading || selectedTypes.length === 0}
+                                style={{ marginTop: 12 }}>
+                                {loading ? '⏳ Generating Assessment…' : '⚡ Generate & Start'}
+                            </button>
+                        </div>
+
+                        {/* Quiz type selector */}
+                        <div className="ap-setup-right">
+                            <h3 style={{ marginBottom: 14 }}>Question Types</h3>
+                            <div className="ap-type-grid">
+                                {QUIZ_TYPES.map(t => (
+                                    <div key={t.id}
+                                        className={`ap-type-card ${selectedTypes.includes(t.id) ? 'active' : ''}`}
+                                        onClick={() => toggleType(t.id)}>
+                                        <div className="ap-type-icon">{t.icon}</div>
+                                        <div className="ap-type-label">{t.label}</div>
+                                        <div className="ap-type-desc">{t.desc}</div>
+                                        {selectedTypes.includes(t.id) && (
+                                            <div className="ap-type-check">✓</div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Taking the assessment */}
+                {step === 'taking' && questions.length > 0 && (
+                    <div className="ap-taking">
+                        {/* Progress */}
+                        <div className="ap-progress-bar">
+                            <div className="progress-bar">
+                                <div className="progress-fill"
+                                    style={{
+                                        width: `${(answeredCount / questions.length) * 100}%`,
+                                        background: 'var(--gradient-brand)'
+                                    }} />
+                            </div>
+                            <div className="ap-progress-label">
+                                Question {currentQ + 1} of {questions.length}
+                            </div>
+                        </div>
+
+                        {/* Question card */}
+                        <QuestionCard
+                            question={questions[currentQ]}
+                            qIdx={currentQ}
+                            answer={answers[currentQ]}
+                            matchAnswer={matchAnswers[currentQ]}
+                            onAnswer={submitAnswer}
+                            onMatchAnswer={submitMatchAnswer}
+                        />
+
+                        {/* Nav */}
+                        <div className="ap-nav">
+                            <button className="btn btn-ghost" disabled={currentQ === 0}
+                                onClick={() => setCurrentQ(c => c - 1)}>← Previous</button>
+
+                            {/* Question dots */}
+                            <div className="ap-dots">
+                                {questions.map((_, i) => (
+                                    <button key={i}
+                                        className={`ap-dot ${i === currentQ ? 'current' : ''} ${answers[i] !== undefined || matchAnswers[i] ? 'answered' : ''
+                                            }`}
+                                        onClick={() => setCurrentQ(i)} />
+                                ))}
+                            </div>
+
+                            {currentQ < questions.length - 1 ? (
+                                <button className="btn btn-primary"
+                                    onClick={() => setCurrentQ(c => c + 1)}>Next →</button>
+                            ) : (
+                                <button className="btn btn-success"
+                                    onClick={gradeAssessment} disabled={grading}>
+                                    {grading ? '⏳ Grading…' : '📊 Submit & Grade'}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Results */}
+                {step === 'results' && results && (
+                    <div className="ap-results">
+                        <div className="ap-results-hero">
+                            <div className={`ap-grade-circle ${results.percentage >= 60 ? 'pass' : 'fail'}`}>
+                                <span className="ap-grade-letter">{results.grade}</span>
+                                <span className="ap-grade-pct">{results.percentage}%</span>
+                            </div>
+                            <div className="ap-results-summary">
+                                <h2>Assessment Complete</h2>
+                                <p className="text-2">
+                                    {results.correct} of {results.total} correct
+                                </p>
+                                <div className="flex gap-2" style={{ marginTop: 10 }}>
+                                    <button className="btn btn-primary" onClick={restartAssessment}>🔄 New Assessment</button>
+                                    <button className="btn btn-ghost" onClick={onClose}>Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="ap-results-breakdown">
+                            <h3 style={{ marginBottom: 12 }}>Question Breakdown</h3>
+                            {results.questions.map((q, i) => (
+                                <div key={i} className={`ap-result-item ${q.isCorrect ? 'correct' : 'wrong'}`}>
+                                    <div className="ap-result-status">{q.isCorrect ? '✅' : '❌'}</div>
+                                    <div className="ap-result-content">
+                                        <div className="ap-result-q">Q{i + 1}. {q.question}</div>
+                                        <div className="ap-result-answer">
+                                            <span className="text-muted">Your answer:</span> {q.userAnswer}
+                                        </div>
+                                        {!q.isCorrect && q.explanation && (
+                                            <div className="ap-result-explain">💡 {q.explanation}</div>
+                                        )}
+                                    </div>
+                                    <span className={`tag ${q.isCorrect ? 'tag-green' : 'tag-coral'}`}>
+                                        {q.isCorrect ? 'Correct' : 'Incorrect'}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </motion.div>
+        </motion.div>
+    )
+}
+
+/* Individual Question Card */
+function QuestionCard({ question: q, qIdx, answer, matchAnswer, onAnswer, onMatchAnswer }) {
+    if (!q) return null
+
+    return (
+        <motion.div className="ap-question-card"
+            key={q.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.2 }}>
+
+            <div className="ap-q-header">
+                <span className={`tag ${q.type === 'mcq' ? 'tag-blue' :
+                    q.type === 'fill_blank' ? 'tag-amber' :
+                        q.type === 'true_false' ? 'tag-teal' :
+                            q.type === 'match_following' ? 'tag-purple' : 'tag-green'
+                    }`}>{q.type.replace(/_/g, ' ')}</span>
+                {q.topic && <span className="text-xs text-muted">{q.topic}</span>}
+            </div>
+
+            <p className="ap-q-text">{q.question}</p>
+
+            {/* MCQ / True-False */}
+            {(q.type === 'mcq' || q.type === 'true_false') && q.options && (
+                <div className="ap-options">
+                    {q.options.map((opt, oi) => (
+                        <button key={oi}
+                            id={`btn-q${qIdx}-opt${oi}`}
+                            className={`ap-option ${answer === oi ? 'selected' : ''}`}
+                            onClick={() => onAnswer(qIdx, oi)}>
+                            <span className="ap-option-key">{String.fromCharCode(65 + oi)}</span>
+                            <span>{opt}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Fill in the blank */}
+            {q.type === 'fill_blank' && (
+                <input
+                    id={`input-q${qIdx}`}
+                    className="input ap-fill-input"
+                    placeholder="Type your answer…"
+                    value={answer || ''}
+                    onChange={e => onAnswer(qIdx, e.target.value)}
+                />
+            )}
+
+            {/* Match the following */}
+            {q.type === 'match_following' && q.pairs && (
+                <MatchingQuestion
+                    pairs={q.pairs}
+                    answers={matchAnswer || {}}
+                    onMatch={(left, right) => onMatchAnswer(qIdx, left, right)}
+                />
+            )}
+
+            {/* Short answer */}
+            {q.type === 'short_answer' && (
+                <textarea
+                    id={`input-q${qIdx}-short`}
+                    className="input"
+                    placeholder="Write your answer…"
+                    rows={4}
+                    value={answer || ''}
+                    onChange={e => onAnswer(qIdx, e.target.value)}
+                    style={{ resize: 'vertical' }}
+                />
+            )}
+        </motion.div>
+    )
+}
+
+/* Match the Following interactive component */
+function MatchingQuestion({ pairs, answers, onMatch }) {
+    const [selectedLeft, setSelectedLeft] = useState(null)
+    const shuffledRight = [...pairs].sort(() => 0.5 - Math.random())
+
+    const handleRightClick = (rightVal) => {
+        if (selectedLeft) {
+            onMatch(selectedLeft, rightVal)
+            setSelectedLeft(null)
+        }
+    }
+
+    return (
+        <div className="ap-match">
+            <div className="ap-match-col">
+                <h4>Term</h4>
+                {pairs.map(p => (
+                    <button key={p.left}
+                        className={`ap-match-item left 
+              ${selectedLeft === p.left ? 'selected' : ''} 
+              ${answers[p.left] ? 'matched' : ''}`}
+                        onClick={() => setSelectedLeft(p.left)}>
+                        {p.left}
+                        {answers[p.left] && <span className="text-xxs text-muted">→ {answers[p.left]}</span>}
+                    </button>
+                ))}
+            </div>
+            <div className="ap-match-col">
+                <h4>Definition</h4>
+                {shuffledRight.map(p => (
+                    <button key={p.right}
+                        className={`ap-match-item right 
+              ${Object.values(answers).includes(p.right) ? 'matched' : ''}`}
+                        onClick={() => handleRightClick(p.right)}
+                        disabled={!selectedLeft}>
+                        {p.right}
+                    </button>
+                ))}
+            </div>
+        </div>
+    )
+}

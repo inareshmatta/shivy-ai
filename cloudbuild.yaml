@@ -1,0 +1,31 @@
+steps:
+  # Build the container image for the Python backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/klassroom-ai-backend', './backend']
+    
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/klassroom-ai-backend']
+    
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'klassroom-ai-backend'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/klassroom-ai-backend'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--set-env-vars'
+      - 'CORS_ORIGINS=https://klassroo-ai.web.app,http://localhost:5173'
+
+images:
+  - 'gcr.io/$PROJECT_ID/klassroom-ai-backend'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,0 +1,28 @@
+.left-panel {}
+
+.lp-settings {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px 14px;
+    gap: 10px;
+}
+
+.lp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lp-label {
+    font-size: 11px;
+    font-weight: 550;
+    color: var(--clr-text-muted);
+    letter-spacing: 0.02em;
+}
+
+.lp-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px 14px;
+}

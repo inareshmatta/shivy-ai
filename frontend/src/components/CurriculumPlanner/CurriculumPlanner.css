@@ -1,0 +1,302 @@
+.planner-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.planner-panel {
+    width: 100%;
+    max-width: 780px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.planner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.planner-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin: 0;
+}
+
+/* ═══ Setup form ═══ */
+.planner-setup {
+    display: flex;
+    justify-content: center;
+}
+
+.planner-setup-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.planner-setup-card h3 {
+    margin: 0;
+    font-size: 18px;
+    text-align: center;
+}
+
+.planner-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--clr-text-muted);
+}
+
+.planner-input {
+    background: var(--clr-surface-1);
+    border: 1px solid var(--clr-border);
+    border-radius: 8px;
+    color: var(--clr-text);
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.planner-input:focus {
+    border-color: var(--clr-primary);
+}
+
+.planner-hours {
+    display: flex;
+    gap: 6px;
+}
+
+.planner-hours .tag {
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.planner-hours .tag.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(108, 142, 242, 0.4);
+}
+
+.planner-books-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.planner-book-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.planner-error {
+    color: var(--clr-coral);
+    font-size: 13px;
+    text-align: center;
+    margin: 0;
+}
+
+/* ═══ Plan content ═══ */
+.planner-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.planner-progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.planner-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.planner-progress-label {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.planner-progress-pct {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--clr-primary);
+}
+
+.planner-progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--clr-surface-1);
+    overflow: hidden;
+}
+
+.planner-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--clr-primary), #A78BFA, #F472B6);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.planner-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--clr-text-muted);
+}
+
+/* ═══ Weeks ═══ */
+.planner-weeks {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.planner-week {
+    background: var(--clr-surface-1);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.planner-week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.planner-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.planner-task {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--clr-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.planner-task:hover {
+    background: rgba(108, 142, 242, 0.06);
+    border-color: rgba(108, 142, 242, 0.3);
+}
+
+.planner-task.done {
+    opacity: 0.5;
+}
+
+.planner-task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--clr-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+
+.planner-task-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.planner-task-subject {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.planner-task-desc {
+    font-size: 13px;
+    color: var(--clr-text-2);
+}
+
+.planner-task-desc.struck {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.planner-task-hours {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+    font-weight: 600;
+    flex-shrink: 0;
+    background: var(--clr-surface-1);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* ═══ Tips ═══ */
+.planner-tips {
+    background: rgba(108, 142, 242, 0.06);
+    border: 1px solid rgba(108, 142, 242, 0.15);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.planner-tips h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.planner-tip {
+    font-size: 13px;
+    color: var(--clr-text-muted);
+    margin: 4px 0;
+    line-height: 1.5;
+}
+
+/* ═══ Actions ═══ */
+.planner-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+/* Scrollbar */
+.planner-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.planner-panel::-webkit-scrollbar-thumb {
+    background: var(--clr-border);
+    border-radius: 3px;
+}

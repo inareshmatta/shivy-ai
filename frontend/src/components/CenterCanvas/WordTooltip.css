@@ -1,0 +1,133 @@
+.word-tooltip {
+    position: fixed;
+    z-index: 500;
+    max-width: 340px;
+}
+
+.wt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--clr-border);
+}
+
+.wt-word-block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.wt-word {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.wt-close {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.wt-pronunciation {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.wt-ipa {
+    font-size: 13px;
+    color: var(--clr-primary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.wt-pronun-guide {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+}
+
+.wt-etymology {
+    font-size: 11px;
+    color: var(--clr-text-muted);
+    background: var(--clr-surface-1);
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.wt-def {
+    font-size: 13px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.wt-gen-def {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.wt-analogy {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+    font-style: italic;
+    background: var(--clr-surface-1);
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.wt-example {
+    font-size: 12px;
+    color: var(--clr-text-muted);
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.wt-fun-fact {
+    font-size: 11px;
+    background: rgba(124, 108, 248, 0.1);
+    border: 1px solid rgba(124, 108, 248, 0.2);
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.wt-context {
+    font-size: 11px;
+    color: var(--clr-text-dim);
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.wt-related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.wt-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--clr-border);
+}
+
+.wt-loading {
+    padding: 4px 0;
+}
+
+.wt-source {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px solid var(--clr-border);
+}
