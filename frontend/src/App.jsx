@@ -111,6 +111,10 @@ export default function App() {
     }))
   }, [])
 
+  if (!hasEntered) {
+    return <LandingPage onEnter={() => setHasEntered(true)} />
+  }
+
   return (
     <div className="app-shell">
       <TopBar
