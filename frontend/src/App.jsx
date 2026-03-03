@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import LeftPanel from './components/LeftPanel/LeftPanel'
 import CenterCanvas from './components/CenterCanvas/CenterCanvas'
@@ -110,6 +110,27 @@ export default function App() {
       history: [...prev.history, imageData],
     }))
   }, [])
+
+  // Listen for agent tool results to automatically open corresponding panels
+  useEffect(() => {
+    const handleToolResult = (e) => {
+      const { tool, result, args } = e.detail
+      if (tool === 'generate_visual') {
+        // Open the visual panel with the generated image
+        if (result && result.image_b64) {
+          onVisualGenerated(result)
+        } else {
+          openVisualPanel(null, args?.topic || '')
+        }
+      } else if (tool === 'generate_quiz' || tool === 'generate_flashcards') {
+        // Open the assessment panel when a quiz or flashcards are generated
+        setAssessmentOpen(true)
+      }
+    }
+
+    window.addEventListener('agent-tool-result', handleToolResult)
+    return () => window.removeEventListener('agent-tool-result', handleToolResult)
+  }, [openVisualPanel, onVisualGenerated])
 
   if (!hasEntered) {
     return <LandingPage onEnter={() => setHasEntered(true)} />
