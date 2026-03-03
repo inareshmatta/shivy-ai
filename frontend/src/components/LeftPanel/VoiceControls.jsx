@@ -215,20 +215,26 @@ Be conversational, use the student's name if they give it, and make learning fun
                                             headers: { 'Content-Type': 'application/json' },
                                             body: JSON.stringify({ tool: fc.name, args: fc.args }),
                                         })
-                                        if (res.ok) toolResult = await res.json()
+                                        if (res.ok) {
+                                            toolResult = await res.json()
+                                        }
                                     } catch (e) {
                                         console.error('[LIVE] Tool execution error:', e)
                                     }
 
-                                    // Dispatch to frontend UI
+                                    // Dispatch the full rich data to the frontend UI so it can render the component
                                     window.dispatchEvent(new CustomEvent('agent-tool-result', {
                                         detail: { tool: fc.name, args: fc.args, result: toolResult }
                                     }))
 
+                                    // Send a simplified status back to Gemini so it doesn't try to read the whole quiz/image aloud verbally
                                     functionResponses.push({
                                         id: fc.id,
                                         name: fc.name,
-                                        response: { result: toolResult },
+                                        response: {
+                                            result: "Success. The tool result is now visible on the user's screen.",
+                                            instruction: "Acknowledge briefly, but DO NOT read the quiz questions, image descriptions, or flashcards aloud."
+                                        },
                                     })
                                 }
 

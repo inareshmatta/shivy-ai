@@ -36,7 +36,7 @@ echo [4/4] Starting backend server...
 echo.
 echo  ========================================
 echo    KlassroomAI is running!
-echo    Frontend & Backend: http://localhost:8080
+echo    Frontend ^& Backend: http://localhost:8080
 echo  ========================================
 echo.
 echo Press Ctrl+C to stop the server and close the app.
