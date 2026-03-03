@@ -21,6 +21,11 @@ cd /d "%~dp0frontend"
 call npm ci >nul 2>&1
 call npx -y vite build
 
+:: Copy frontend build to backend static folder
+echo.
+echo Copying frontend build to backend...
+xcopy /s /e /y "%~dp0frontend\dist\*" "%~dp0backend\static\" >nul 2>&1
+
 :: Navigate to backend
 cd /d "%~dp0backend"
 
