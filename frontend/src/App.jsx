@@ -40,6 +40,7 @@ export default function App() {
 
   // Assessment panel state
   const [assessmentOpen, setAssessmentOpen] = useState(false)
+  const [assessmentData, setAssessmentData] = useState(null)
 
   // Curriculum Planner state
   const [plannerOpen, setPlannerOpen] = useState(false)
@@ -124,6 +125,7 @@ export default function App() {
         }
       } else if (tool === 'generate_quiz' || tool === 'generate_flashcards') {
         // Open the assessment panel when a quiz or flashcards are generated
+        setAssessmentData(result)
         setAssessmentOpen(true)
       }
     }
@@ -207,7 +209,11 @@ export default function App() {
             activeBook={activeBook}
             pageAnalysis={pageAnalysis}
             currentPage={currentPage}
-            onClose={() => setAssessmentOpen(false)}
+            initialData={assessmentData}
+            onClose={() => {
+              setAssessmentOpen(false)
+              setAssessmentData(null)
+            }}
           />
         )}
       </AnimatePresence>
