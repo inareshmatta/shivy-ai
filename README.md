@@ -338,7 +338,7 @@ After spinning up the app, here's how judges can test every feature:
 | **Health Check** | [/health](https://klassbook-ai-kygarr5jkq-uc.a.run.app/health) |
 | **Infrastructure-as-Code** | [`cloudbuild.yaml`](./cloudbuild.yaml) + [`Dockerfile`](./backend/Dockerfile) |
 | **Google Cloud API Usage** | [`ephemeral_token.py`](https://github.com/inareshmatta/klassroom-ai/blob/main/backend/routers/ephemeral_token.py) — Ephemeral token minting · [`tool_executor.py`](https://github.com/inareshmatta/klassroom-ai/blob/main/backend/routers/tool_executor.py) — Tool execution · [`VoiceControls.jsx`](https://github.com/inareshmatta/klassroom-ai/blob/main/frontend/src/components/LeftPanel/VoiceControls.jsx) — Direct Gemini Live API connection · [`interactions.py`](https://github.com/inareshmatta/klassroom-ai/blob/main/backend/routers/interactions.py) — Agentic tool orchestration |
-| **Cloud Console** | [Cloud Run Dashboard](https://console.cloud.google.com/run/detail/us-central1/klassroom-api?project=alert-nimbus-482707-p6) |
+| **Cloud Console** | [Cloud Run Dashboard](https://console.cloud.google.com/run/detail/us-central1/klassbook-ai?project=klassroom-ai-backend) |
 
 ---
 
