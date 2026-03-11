@@ -51,37 +51,72 @@ def _execute(name: str, args: dict, client) -> dict:
     if name == "generate_quiz":
         topic = args.get("topic", "General")
         num = min(_safe_int(args.get("num_questions"), 3), 5)
-        qtype = args.get("quiz_type", "mcq") or "mcq"
         diff = _safe_int(args.get("difficulty"), 3)
+
+        print(f"[QUIZ] Generating {num} MCQ questions about '{topic}' (difficulty {diff})")
 
         response = client.models.generate_content(
             model=TEXT_MODEL,
             contents=[
-                f"Generate {num} {qtype} questions about '{topic}' at difficulty {diff}/5. "
-                f"Return JSON with 'questions' array. Each has: question, options (array of 4 strings), correct_index (int 0-3), explanation."
+                f"Generate exactly {num} multiple-choice questions about '{topic}' at difficulty {diff}/5.\n"
+                f"Return a JSON object like: {{\"questions\": [...]}}\n"
+                f"Each question object MUST have these keys:\n"
+                f"- \"question\": string\n"
+                f"- \"options\": array of exactly 4 strings\n"
+                f"- \"correct_index\": integer 0-3\n"
+                f"- \"explanation\": string\n"
+                f"Return ONLY valid JSON. No extra text."
             ],
             config=types.GenerateContentConfig(response_mime_type="application/json"),
         )
         try:
-            text = response.text
-            if text.startswith("```json"):
-                text = text.split("```json")[1]
+            text = response.text.strip()
+            print(f"[QUIZ] Raw response length: {len(text)} chars")
+            
+            # Strip markdown wrappers if any
             if text.startswith("```"):
-                text = text.split("```")[1]
+                text = text.split("\n", 1)[1] if "\n" in text else text[3:]
             if text.endswith("```"):
                 text = text.rsplit("```", 1)[0]
-                
-            parsed = json.loads(text.strip())
-            
-            # Sometimes models return {"quiz": {"questions": [...]}} or just {"questions": [...]}
-            if "quiz" in parsed and "questions" in parsed["quiz"]:
-                parsed = parsed["quiz"]
-                
+            text = text.strip()
+
+            parsed = json.loads(text)
+            print(f"[QUIZ] Parsed JSON type: {type(parsed).__name__}, keys: {list(parsed.keys()) if isinstance(parsed, dict) else 'N/A (list)'}")
+
+            # ── Normalize to {questions: [...]} ──
+            questions = None
+
+            if isinstance(parsed, list):
+                # Model returned raw array of question objects
+                questions = parsed
+            elif isinstance(parsed, dict):
+                if "questions" in parsed:
+                    questions = parsed["questions"]
+                elif "quiz" in parsed:
+                    inner = parsed["quiz"]
+                    if isinstance(inner, dict) and "questions" in inner:
+                        questions = inner["questions"]
+                    elif isinstance(inner, list):
+                        questions = inner
+                else:
+                    # Last resort: look for any key whose value is a list
+                    for k, v in parsed.items():
+                        if isinstance(v, list) and len(v) > 0:
+                            questions = v
+                            break
+
+            if questions is None:
+                questions = []
+                print(f"[QUIZ] WARNING: Could not extract questions from parsed JSON")
+
+            print(f"[QUIZ] Extracted {len(questions)} questions")
+            final = {"questions": questions}
+
         except (json.JSONDecodeError, TypeError, Exception) as e:
-            print(f"[QUIZ PARSE ERROR] {e}: {response.text}")
-            parsed = {"questions": [], "raw": response.text}
-            
-        return {"quiz": parsed, "tool": "generate_quiz"}
+            print(f"[QUIZ PARSE ERROR] {e}: {response.text[:500]}")
+            final = {"questions": []}
+
+        return {"quiz": final, "tool": "generate_quiz"}
 
     elif name == "lookup_word":
         word = args.get("word", "")
