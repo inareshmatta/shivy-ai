@@ -296,7 +296,7 @@ npm run dev
 After spinning up the app, here's how judges can test every feature:
 
 ### Test 1: Upload a PDF & Interactive Words
-1. Open [http://localhost:5173](http://localhost:5173) in Chrome
+1. Open [https://klassbook-ai-kygarr5jkq-uc.a.run.app](https://klassbook-ai-kygarr5jkq-uc.a.run.app) in Chrome
 2. Drag any PDF into the upload area on the left panel
 3. **Click any word** on the rendered page → a dictionary tooltip appears with pronunciation, etymology, and definition
 4. Click **🔖 Save** → the word appears in the **Knowledge Vault** (right panel)
