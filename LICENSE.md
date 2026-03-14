@@ -1,7 +1,7 @@
 # Proprietary Software License Agreement
 
 **Version:** 1.0  
-**Effective Date:** March 14, 2026  
+**Effective Date:** March 3, 2026  
 **Copyright (c) 2026 Naresh Matta / Shivy AI. All Rights Reserved.**
 
 ---
@@ -10,7 +10,7 @@
 This software, including all source code, documentation, assets, and features ("the Software"), is the exclusive property of Naresh Matta ("the Owner"). This is a **Proprietary License**. This is NOT free or open-source software.
 
 ### 2. LEGACY PROPRIETARY TERMS
-Be it known that all features, logic, and code implementations added, modified, or integrated into the Software on or after **March 14, 2026**, are strictly governed by these **Legacy Proprietary Terms**. 
+Be it known that all features, logic, and code implementations added, modified, or integrated into the Software on or after effective date, are strictly governed by these **Legacy Proprietary Terms**. 
 
 The Owner asserts full intellectual property rights over all novel features developed prior to and following this date, including but not limited to the AI Voice Tutor orchestration, Webcam Discipline Tracking, Contextual Dictation systems, and Interactive Guided Reading logic.
 
