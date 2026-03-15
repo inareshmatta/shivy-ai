@@ -21,4 +21,5 @@ build/
 
 # Sensitive Docs
 SHIVY_INSTRUCTIONS.md
+JUDGES_INSTRUCTIONS.md
 judge_access_instructions.doc
