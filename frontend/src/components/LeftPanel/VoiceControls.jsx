@@ -23,6 +23,7 @@ export default function VoiceControls({
     const streamRef = useRef(null)
     const videoRef = useRef(null)             // Hidden video element for webcam
     const visionIntervalRef = useRef(null)    // Interval for sending webcam frames
+    const isToolPendingRef = useRef(false)    // Prevents "Operation not implemented" crash when sending input during a pending tool call
 
     // Refs for volatile state
     const settingsRef = useRef(settings)
@@ -269,6 +270,10 @@ GUIDED READING:
                             }
 
                             if (functionCalls.length > 0) {
+                                // STOP sending audio/video to Gemini while a tool is pending
+                                // If we don't, the server rejects it with Error 1008 "Operation not implemented"
+                                isToolPendingRef.current = true
+
                                 // Execute tools in the background — do NOT block the message handler
                                 // This prevents audio lag while tools are being fetched
                                 const gs = sessionRef.current
@@ -309,7 +314,11 @@ GUIDED READING:
                                         }
 
                                         // 1. Send immediate ACK back to Gemini to unblock the conversation loop
-                                        if (gs) gs.sendToolResponse({ functionResponses })
+                                        if (gs) {
+                                            gs.sendToolResponse({ functionResponses })
+                                            // RESUME sending audio/video now that the tool has been acknowledged
+                                            isToolPendingRef.current = false
+                                        }
 
                                         // 2. NOW execute the tools on the backend asynchronously
                                         for (const fc of functionCalls) {
@@ -388,6 +397,8 @@ GUIDED READING:
             // Start continuous vision loop (every 3 seconds for better dictation responsiveness)
             visionIntervalRef.current = setInterval(() => {
                 if (!sessionRef.current || !videoRef.current) return
+                if (isToolPendingRef.current) return // Do not send vision while a tool is pending (Crash 1008 fix)
+                
                 if (videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA && videoRef.current.videoWidth > 0) {
                     try {
                         // Enforce max width of 480px to prevent massively uncompressed frames from 
@@ -421,7 +432,8 @@ GUIDED READING:
             processorRef.current = proc
 
             proc.onaudioprocess = (e) => {
-                if (!sessionRef.current) return
+                if (!sessionRef.current || isToolPendingRef.current) return // Pause audio input when tool is pending
+                
                 const f32 = e.inputBuffer.getChannelData(0)
                 const i16 = new Int16Array(f32.length)
                 for (let i = 0; i < f32.length; i++) {
